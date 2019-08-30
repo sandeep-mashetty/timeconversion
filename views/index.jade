@@ -1,0 +1,38 @@
+extends layout
+
+block content
+	h1= title
+	p Welcome to #{time}
+	br
+	| datetime #{new Date()}
+	br
+	input#datetime(type="datetime", name="datetime")
+	br
+	//-select#format(name="format")
+		option(value='') Select Format
+		option(value='dd-mmm-yy') (dd-mmm-yy) - 25-Dec-81
+		option(value='dd-mmm-yyyy') (dd-mmm-yyyy) - 25-Dec-1981
+		option(value='mm/dd/yy') (mm/dd/yy) - 12/25/81
+		option(value='mm/dd/yyyy') (mm/dd/yy) - 12/25/1981
+	br
+	select#convertto(name="convertto")
+		option(value='') Convert To
+		for li in list
+			option(value=li.name) #{li.time}
+	br
+	button(type="button" onclick="gettime()") Submit
+	button(type="button" onclick="currenttime()") Convert Current Date/Time
+	#timezonehtml
+	script.
+		function gettime(){
+			var datetime = $("#datetime").val();
+			var timezone = $("#timezone").val();
+			var convertto = $("#convertto").val();
+			$.post('/time',{datetime:datetime, timezone:timezone, convertto:convertto},function(data){
+				$("#timezonehtml").html(data.html);
+			});
+		}
+		function currenttime(){
+			$("#datetime").val(new Date());
+			gettime();
+		}
